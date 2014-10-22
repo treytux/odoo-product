@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <record id="paperformat_product_sale_label" model="report.paperformat">
-            <field name="name">Sale label</field>
+        <record id="paperformat_product_label" model="report.paperformat">
+            <field name="name">Product label</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
             <field name="page_height">40</field>

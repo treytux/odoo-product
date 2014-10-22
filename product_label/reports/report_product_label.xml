@@ -4,28 +4,28 @@
 
         <!-- report_type="qweb-pdf" -->
         <report
-            id="action_sale_label"
+            id="action_label"
             string="Sale label"
             model="product.product"
             report_type="qweb-pdf"
-            name="product_sale_label.sale_label"
-            file="product_sale_label.sale_label"
+            name="product_label.label"
+            file="product_label.label"
             menu="True"
          />
 
         <!-- Action -->
-        <record id="action_sale_label" model="ir.actions.report.xml">
-            <field name="paperformat_id" ref="product_sale_label.paperformat_product_sale_label"/>
+        <record id="action_label" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="product_label.paperformat_product_label"/>
         </record>
 
         <!-- Views -->
-        <template id="sale_label">
+        <template id="label">
             <t t-foreach="doc_ids" t-as="doc_id">
-                <t t-raw="translate_doc(doc_id, doc_model, 'name', 'product_sale_label.sale_label_document')"/>
+                <t t-raw="translate_doc(doc_id, doc_model, 'name', 'product_label.label_document')"/>
             </t>
         </template>
 
-        <template id="sale_label_document">
+        <template id="label_document">
             <t t-call="report.html_container">
                 <div class="page">
                     <style>

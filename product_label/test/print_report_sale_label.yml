@@ -2,7 +2,7 @@
     Crear un producto
 -
     !record {model: product.product, id: product_consu}:
-        name: Producto de prueba (product_sale_label)
+        name: Producto de prueba (product_label)
         standard_price: 25.5
         list_price: 38.25
         type: consu
@@ -20,9 +20,9 @@
         from openerp import tools
         data, format = openerp.report.render_report(
             cr, uid, [ref('product_consu')],
-            'product_sale_label.sale_label',
+            'product_label.label',
             {}, {})
 
         if tools.config['test_report_directory']:
             file(os.path.join(tools.config['test_report_directory'],
-                'sale_label.'+format), 'wb+').write(data)
+                'label.'+format), 'wb+').write(data)

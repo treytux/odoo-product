@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- wiz.print_product_label -->
+        <!-- Print product labels -->
+        <!-- Print product labels -->
+        <record id="wizard_product_labels" model="ir.ui.view">
+            <field name="name">Print product labels</field>
+            <field name="model">wiz.print_product_label</field>
+            <field name="arch" type="xml">
+                <form string="Print product labels">
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <footer>
+                        <button name="button_print" class="oe_highlight"
+                            type="object" string="Print" />
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_product_labels" model="ir.actions.act_window" >
+            <field name="name">Print product labels</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wiz.print_product_label</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_product_labels"/>
+            <field name="target">new</field>
+            <field name="multi">True</field>
+        </record>
+
+        <record model="ir.values" id="values_action_product_labels">
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="name">Print product labels</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_product_labels'))"/>
+            <field name="key">action</field>
+            <field name="model">stock.picking</field>
+        </record>
+    </data>
+</openerp>

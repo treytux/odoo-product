@@ -19,21 +19,21 @@
 #
 ###############################################################################
 
-from openerp.osv import osv
+from openerp import models
 from functools import partial
 import logging
 
 _log = logging.getLogger(__name__)
 
 
-class ProductLabelReport(osv.AbstractModel):
-    _name = 'report.product_sale_label.sale_label'
+class ProductLabelReport(models.AbstractModel):
+    _name = 'report.product_label.label'
 
     def render_html(self, cr, uid, ids, data=None, context=None):
         report_obj = self.pool['report']
         purchase_obj = self.pool['product.product']
         report = report_obj._get_report_from_name(
-            cr, uid, 'product_sale_label.sale_label')
+            cr, uid, 'product_label.label')
         selected_orders = purchase_obj.browse(cr, uid, ids, context=context)
 
         docargs = {
@@ -47,7 +47,7 @@ class ProductLabelReport(osv.AbstractModel):
 
         return report_obj.render(
             cr, uid, ids,
-            'product_sale_label.sale_label', docargs,
+            'product_label.label', docargs,
             context=context)
 
     def formatCurrency(self, value):

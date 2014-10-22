@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- wiz.product.label -->
+        <!-- product_label -->
+        <!-- Print label -->
+        <record id="wizard_product_label" model="ir.ui.view">
+            <field name="name">Print label</field>
+            <field name="model">wiz.product.label</field>
+            <field name="arch" type="xml">
+                <form string="Print label">
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <footer>
+                        <button name="button_print" class="oe_highlight"
+                            type="object" string="Accept" />
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_product_label" model="ir.actions.act_window" >
+            <field name="name">Print label</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wiz.product.label</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_product_label"/>
+            <field name="target">new</field>
+            <field name="multi">True</field>
+        </record>
+
+        <record model="ir.values" id="values_action_product_label">
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="name">Print label</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_product_label'))"/>
+            <field name="key">action</field>
+            <field name="model">product.product</field>
+        </record>
+    </data>
+</openerp>

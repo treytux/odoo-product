@@ -20,8 +20,8 @@
 ###############################################################################
 
 {
-    'name': 'Product Sale Label',
-    'summary': 'Product label report for sales',
+    'name': 'Product Label Picking',
+    'summary': 'Product label from pickings',
     'category': 'Sales management',
     'version': '1.0',
     'description': """
@@ -29,14 +29,12 @@
     'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
     'website': 'http://www.trey.es',
     'depends': [
-        'product',
+        'product_label',
+        'stock'
     ],
     'data': [
-        'data/report_paperformat.xml',
-        'reports/report_product_label.xml',
     ],
     'test': [
-        'test/print_report_sale_label.yml',
     ],
     'installable': True,
 }

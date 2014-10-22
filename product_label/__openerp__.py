@@ -19,5 +19,25 @@
 #
 ###############################################################################
 
-from . import reports
-
+{
+    'name': 'Product Label',
+    'summary': 'Product label report',
+    'category': 'Sales management',
+    'version': '1.0',
+    'description': """
+    """,
+    'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
+    'website': 'http://www.trey.es',
+    'depends': [
+        'product',
+    ],
+    'data': [
+        'data/report_paperformat.xml',
+        'reports/report_product_label.xml',
+        'wizard/wizard_report.xml',
+    ],
+    'test': [
+        'test/print_report_label.yml',
+    ],
+    'installable': True,
+}
