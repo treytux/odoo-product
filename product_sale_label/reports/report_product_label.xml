@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<openerp>
+    <data>
+
+        <!-- report_type="qweb-pdf" -->
+        <report
+            id="action_sale_label"
+            string="Sale label"
+            model="product.product"
+            report_type="qweb-pdf"
+            name="product_sale_label.sale_label"
+            file="product_sale_label.sale_label"
+            menu="True"
+         />
+
+        <!-- Action -->
+        <record id="action_sale_label" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="product_sale_label.paperformat_product_sale_label"/>
+        </record>
+
+        <!-- Views -->
+        <template id="sale_label">
+            <t t-foreach="doc_ids" t-as="doc_id">
+                <t t-raw="translate_doc(doc_id, doc_model, 'name', 'product_sale_label.sale_label_document')"/>
+            </t>
+        </template>
+
+        <template id="sale_label_document">
+            <t t-call="report.html_container">
+                <div class="page">
+                    <style>
+                        body {
+                            color: #000;
+                            font-family: Arial, Helvetica,"Lucida Grande", serif;
+                            font-size: 22pt; /* 14pt */
+                            letter-spacing:0.0px;
+                            line-height: 1.4em;
+                            margin:0;
+                            padding:0;
+                            word-spacing:1px;
+                        }
+                        .tbig {
+                            font-size: 26pt; /* 17pt */
+                            font-weight: bold;
+                            float: left;
+                            display: inline-block;
+                        }
+                        .tsmall {
+                            font-size: 10pt;
+                            font-weight: bold;
+                            float: left;
+                            display: inline-block;
+                        }
+                        .tinvert {
+                            background: #000;
+                            color: #fff;
+                        }
+                    </style>
+                    <!-- <div class="oe_structure"/> -->
+                    <div class="row" style="text-align: center;">
+                       <img t-att-src="'/report/barcode/EAN13/%s?width=%s&amp;height=%s' % (o.ean13 or '0000000000000', 350, 80)"/>
+                    </div>
+                    <div class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
+                        <span t-esc="o.name"/>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
+                            <span t-esc="o.default_code or 'codigo'"/>
+                        </div>
+                        <div class="col-xs-6" style="margin-top: 2px;">
+                            <span class="tbig tinvert" t-esc="formatCurrency(get_pricelist(o))"/>
+                            <span class="tsmall" style="margin: 5px 0px 5px 5px;">EUR</span>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</openerp>

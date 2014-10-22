@@ -1,0 +1,28 @@
+-
+    Crear un producto
+-
+    !record {model: product.product, id: product_consu}:
+        name: Producto de prueba (product_sale_label)
+        standard_price: 25.5
+        list_price: 38.25
+        type: consu
+        uom_id: product.product_uom_unit
+        uom_po_id: product.product_uom_unit
+        description_sale: Producto de prueba para las etiquetas de ventas
+        default_code: PRO1234
+
+-
+    Imprimir etiqueta de venta
+-
+    !python {model: product.product}: |
+        import os
+        import openerp.report
+        from openerp import tools
+        data, format = openerp.report.render_report(
+            cr, uid, [ref('product_consu')],
+            'product_sale_label.sale_label',
+            {}, {})
+
+        if tools.config['test_report_directory']:
+            file(os.path.join(tools.config['test_report_directory'],
+                'sale_label.'+format), 'wb+').write(data)
