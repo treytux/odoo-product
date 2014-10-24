@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="product_season_search_view" model="ir.ui.view">
+            <field name="name">product.season.search</field>
+            <field name="model">product.season</field>
+            <field name="arch" type="xml">
+                <search string="Product Season">
+                    <field name="name" string="Season"/>
+                    <field name="year" string="Year"/>
+                    <separator/>
+                    <group  expand='0' string='Group by...'>
+                       <filter string='Year' icon="terp-mrp" domain="[]" context="{'group_by' : 'year'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="product_season_tree_view" model="ir.ui.view">
+            <field name="name">product.season.tree</field>
+            <field name="model">product.season</field>
+            <field name="arch" type="xml">
+                <tree string="Product Season">
+                    <field name="name"/>
+                    <field name="year"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_season_form_view" model="ir.ui.view">
+            <field name="name">product.season.form</field>
+            <field name="model">product.season</field>
+            <field name="arch" type="xml">
+                <form string="Product Season">
+                    <sheet>
+                        <label for="name"/>
+                        <field name="name"/>
+                        <label for="year"/>
+                        <field name="year"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_season_action" model="ir.actions.act_window">
+            <field name="name">Seasons</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.season</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product_season_search_view"/>
+        </record>
+
+        <menuitem action="product_season_action"
+            id="menu_product_season_action"
+            parent="base.menu_product" sequence="1"/>
+
+    </data>
+</openerp>

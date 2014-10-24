@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="product_brand_search_view" model="ir.ui.view">
+            <field name="name">product.brand.search</field>
+            <field name="model">product.brand</field>
+            <field name="arch" type="xml">
+                <search string="Product brand">
+                    <field name="name" string="Brand Name"/>
+                    <field name="manufacturer_id" string="Manufacturer"/>
+                    <separator/>
+                    <group  expand='0' string='Group by...'>
+                       <filter string='Manufacturer' icon="terp-mrp" domain="[]" context="{'group_by' : 'manufacturer_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="product_brand_tree_view" model="ir.ui.view">
+            <field name="name">product.brand.tree</field>
+            <field name="model">product.brand</field>
+            <field name="arch" type="xml">
+                <tree string="Product brand">
+                    <field name="name"/>
+                    <field name="manufacturer_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_brand_form_view" model="ir.ui.view">
+            <field name="name">product.brand.form</field>
+            <field name="model">product.brand</field>
+            <field name="arch" type="xml">
+                <form string="Product brand">
+                    <sheet>
+                        <label for="name"/>
+                        <field name="name"/>
+                        <label for="manufacturer_id"/>
+                        <field name="manufacturer_id"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_brand_action" model="ir.actions.act_window">
+            <field name="name">Brands</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.brand</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product_brand_search_view"/>
+        </record>
+
+        <menuitem action="product_brand_action"
+            id="menu_product_brand_action"
+            parent="base.menu_product" sequence="1"/>
+
+    </data>
+</openerp>

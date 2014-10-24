@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="product_template_search_view" model="ir.ui.view">
+            <field name="name">product.template.search</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='name']" position="after">
+                        <field name="season_id" string="Season"/>
+                        <field name="manufacturer_id" string="Manufacturer"/>
+                        <field name="brand_id" string="Brand"/>
+                    </xpath>
+                    <xpath expr="//group[@string='Group by...']" position="inside">
+                       <filter string='Season' icon="terp-mrp" domain="[]" context="{'group_by' : 'season_id'}"/>
+                       <filter string='Manufacturer' icon="terp-mrp" domain="[]" context="{'group_by' : 'manufacturer_id'}"/>
+                       <filter string='Brand' icon="terp-mrp" domain="[]" context="{'group_by' : 'brand_id'}"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="product_template_tree_view" model="ir.ui.view">
+            <field name="name">product.template.product.tree</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='state']" position="after">
+                        <field name="season_id"/>
+                        <field name="brand_id"/>
+                        <field name="manufacturer_id"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="product_template_form_view" model="ir.ui.view">
+            <field name="name">product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='default_code']" position="after">
+                        <field name="season_id"/>
+                        <field name="brand_id"/>
+                        <field name="manufacturer_id"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+    </data>
+</openerp>
