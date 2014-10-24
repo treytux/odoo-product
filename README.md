@@ -1,3 +1,7 @@
+```product_attribute_extension ```
+====
+Crea vistas para acceder a los tipos de atributos y a sus valores.
+
 ```product_defaul_code_in_name ```
 ====
 Añade la referencia (default_code) al nombre del producto
@@ -21,3 +25,4 @@ Amplia la información de los productos con temporada, marca y fabricante
 ```product_variant_search_ean13 ```
 ====
 Permite la búsqueda por el campo 'Código EAN13' en el listado de productos de variantes.
+
