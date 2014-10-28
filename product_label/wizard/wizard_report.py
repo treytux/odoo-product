@@ -20,37 +20,34 @@
 ###############################################################################
 
 from openerp import models, fields, api
+import logging
+_log = logging.getLogger(__name__)
 
 
-class WizCreateInvoice(models.TransientModel):
+class WizProductLabel(models.TransientModel):
     _name = 'wiz.product.label'
     _description = 'Wizard to report label'
 
-    name = fields.Char(string="Description")
+    name = fields.Char(string="DescriptionXXX")
 
+    @api.one
     def get_report_formats(self):
-        report_ids = self.env['ir.actions.report.xml'].search([])
-        return self.env['ir.actions.report.xml'].browse(report_ids)
+        report_ids = self.env['ir.actions.report.xml'].search(
+            [('key', '=', 'product_label')])
+        reports = self.env['ir.actions.report.xml'].browse(report_ids)
+        _log.info('------------------------------------------')
+        _log.info(reports)
+        _log.info('------------------------------------------')
+        return reports
 
     @api.one
     def button_print(self):
-        import logging
-
-        _log = logging.getLogger(__name__)
-        _log.info(self.env.context)
-        _log.info('------------------------------------------')
-        _log.info('------------------------------------------')
-
-        product = self.env['product.product'].browse(
-            self.env.context['active_id'])
-
+        _log.info('XXXXXXXXXXXXXXXXXXXXXXXXXXX')
         datas = {
-            'ids': [product.id],
+            'ids': [self.env.context['active_id']],
             'model': 'product.product',
         }
-
+        _log.info(datas)
         re = self.env['report'].get_action(
             [], 'product_label.label', data=datas)
-        _log.info(re)
-
         return re

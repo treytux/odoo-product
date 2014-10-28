@@ -18,8 +18,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+from openerp import models, fields
 
-from . import models
-from . import reports
-from . import wizard
 
+class IrActionsReportXml(models.Model):
+    _inherit = 'ir.actions.report.xml'
+
+    key = fields.Char(
+        string='Key',
+        help='Key for group reports'
+    )
+
+    # key_image = fields.Binary(
+    #     string='Report Thumbnail',
+    #     filter='*.jpg,*.png'
+    # )

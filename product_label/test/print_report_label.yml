@@ -26,3 +26,18 @@
         if tools.config['test_report_directory']:
             file(os.path.join(tools.config['test_report_directory'],
                 'label.'+format), 'wb+').write(data)
+
+# -
+#     Imprimir etiqueta de producto por wizard
+# -
+#     !python {model: wiz.product.label}: |
+#         import logging
+#         _log = logging.getLogger(__name__)
+
+#         wiz_id = self.create({
+#             'name': 'Un texto'
+#         })
+#         context.update({
+#             'active_id': ref('product_consu')
+#         })
+#         self.button_print(cr, uid, [wiz_id], context=context)

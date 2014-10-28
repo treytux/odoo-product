@@ -16,6 +16,7 @@
         <!-- Action -->
         <record id="action_label" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="product_label.paperformat_product_label"/>
+            <field name="key">product_label</field>
         </record>
 
         <!-- Views -->
@@ -68,7 +69,7 @@
                             <span t-esc="o.default_code or 'codigo'"/>
                         </div>
                         <div class="col-xs-6" style="margin-top: 2px;">
-                            <span class="tbig tinvert" t-esc="formatCurrency(get_pricelist(o))"/>
+                            <!-- <span class="tbig tinvert" t-esc="formatCurrency(get_pricelist(o))"/> -->
                             <span class="tsmall" style="margin: 5px 0px 5px 5px;">EUR</span>
                         </div>
                     </div>
