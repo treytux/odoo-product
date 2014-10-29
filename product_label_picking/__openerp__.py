@@ -33,6 +33,7 @@
         'stock'
     ],
     'data': [
+        'wizard/wizard_report_from_picking.xml',
     ],
     'test': [
     ],

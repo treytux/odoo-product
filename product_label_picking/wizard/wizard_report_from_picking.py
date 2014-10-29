@@ -21,27 +21,37 @@
 from openerp import models, fields
 
 
-class WizProductLabel(models.TransientModel):
-    _name = 'wiz.product.label'
-    _description = 'Wizard to report label'
+class WizProductLabelFromPicking(models.TransientModel):
+    _inherit = 'wiz.product.label'
 
-    def _get_default_report(self):
-        report_ids = self.env['ir.actions.report.xml'].search(
-            [('name', 'ilike', '(product_label)')])
-        return report_ids[0]
+    quantity = fields.Selection(
+        selection=[
+            ('one', 'One label for each product'),
+            ('line', 'One label for each line'),
+            ('total', 'Total product quantity'),
+        ],
+        string='Quantity',
+        default='total',
+        translate=True)
 
-    report_id = fields.Many2one(
-        comodel_name='ir.actions.report.xml',
-        string='Report',
-        domain=[('name', 'ilike', '(product_label)')],
-        default=_get_default_report,
-        required=True)
-
-    def button_print(self, cr, uid, ids, context=None):
+    def button_print_from_picking(self, cr, uid, ids, context=None):
         wiz = self.browse(cr, uid, ids[0], context=context)
-        datas = {'ids': context.get('active_ids', [])}
+        move_ids = self.pool['stock.move'].search(
+            cr, uid, [('picking_id', 'in', context.get('active_ids', []))])
+        moves = self.pool['stock.move'].browse(cr, uid, move_ids)
+
+        product_ids = []
+        if wiz.quantity == 'one':
+            product_ids = [m.product_id.id for m in moves]
+            product_ids = list(set(product_ids))
+        elif wiz.quantity == 'line':
+            product_ids = [m.product_id.id for m in moves]
+        elif wiz.quantity == 'total':
+            for m in moves:
+                product_ids = product_ids + (
+                    [m.product_id.id] * int(m.product_qty))
         return {
             'type': 'ir.actions.report.xml',
             'report_name': wiz.report_id.report_name,
-            'datas': datas,
+            'datas': {'ids': product_ids},
         }
