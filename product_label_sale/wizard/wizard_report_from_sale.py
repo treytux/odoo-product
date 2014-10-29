@@ -21,7 +21,7 @@
 from openerp import models, fields, exceptions, _
 
 
-class WizProductLabelFromPicking(models.TransientModel):
+class WizProductLabelFromSale(models.TransientModel):
     _inherit = 'wiz.product.label'
 
     quantity = fields.Selection(
@@ -33,12 +33,15 @@ class WizProductLabelFromPicking(models.TransientModel):
         string='Quantity',
         default='total',
         translate=True)
+    include_service_product = fields.Boolean(
+        string='Include service products',
+        default=False)
 
-    def button_print_from_picking(self, cr, uid, ids, context=None):
+    def button_print_from_sale(self, cr, uid, ids, context=None):
         wiz = self.browse(cr, uid, ids[0], context=context)
-        move_ids = self.pool['stock.move'].search(
-            cr, uid, [('picking_id', 'in', context.get('active_ids', []))])
-        moves = self.pool['stock.move'].browse(cr, uid, move_ids)
+        move_ids = self.pool['sale.order.line'].search(
+            cr, uid, [('order_id', 'in', context.get('active_ids', []))])
+        moves = self.pool['sale.order.line'].browse(cr, uid, move_ids)
 
         product_ids = []
         if wiz.quantity == 'one':
@@ -49,7 +52,15 @@ class WizProductLabelFromPicking(models.TransientModel):
         elif wiz.quantity == 'total':
             for m in moves:
                 product_ids = product_ids + (
-                    [m.product_id.id] * int(m.product_qty))
+                    [m.product_id.id] * int(m.product_uom_qty))
+
+        if not wiz.include_service_product:
+            products = self.pool['product.product'].browse(
+                cr, uid, list(set(product_ids)))
+            for product in products:
+                if product.type == 'service':
+                    product_ids = filter(lambda x: x != product.id,
+                                         product_ids)
 
         product_ids = filter(lambda x: x, product_ids)
         if not product_ids:

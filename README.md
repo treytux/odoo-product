@@ -14,6 +14,10 @@ Imprimir una etiqueta de producto con el EAN13, nombre, precio y ref. interna.
 ====
 Imprimir la etiqueta ```product_label ``` desde los albaranes de entrada, de salida, y los internos.
 
+```product_label_sale ```
+====
+Imprimir la etiqueta ```product_label ``` desde los albaranes y presupuestos
+
 ```product_history ```
 ====
 Hace visible el historico de los cambios de precio de los productos.
@@ -25,4 +29,3 @@ Amplia la información de los productos con temporada, marca y fabricante
 ```product_variant_search_ean13 ```
 ====
 Permite la búsqueda por el campo 'Código EAN13' en el listado de productos de variantes.
-
