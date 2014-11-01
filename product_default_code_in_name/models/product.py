@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+###############################################################################
 #
 #    Trey, Kilobytes de Soluciones
 #    Copyright (C) 2014-Today Trey, Kilobytes de Soluciones <www.trey.es>
@@ -17,30 +17,8 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################
-
-from openerp import models, fields, api
-import logging
-logger = logging.getLogger(__name__)
-
-# class product_protuct(models.Model):
-#     _inherit = "product.product"
-
-#     display_name = fields.Char(compute='_compute_display_name')
-
-#     @api.one
-#     @api.depends('name', 'default_code')
-#     def _compute_display_name(self):
-#         print "*" * 80
-#         print "*" * 80
-#         print self.default_code
-#         print "*" * 80
-#         print "*" * 80
-
-#         if self.default_code:
-#             return '[%s] %s' % (self.default_code, self.name)
-#         else:
-#             return self.name
+###############################################################################
+from openerp import models, api
 
 
 class product_template(models.Model):
@@ -50,23 +28,7 @@ class product_template(models.Model):
     def _compute_display_name(self):
         for i, got_name in enumerate(self.name_get()):
             if self[i].default_code:
-                self[i].display_name = u'[{}] {}'.format(self[i].default_code, got_name[1])
+                self[i].display_name = u'[{}] {}'.format(self[i].default_code,
+                                                         got_name[1])
             else:
                 self[i].display_name = got_name[1]
-
-            # logger.info(u'*' * 20)
-            # logger.info(u'display name: {} {}'.format(self[i].default_code, self[i].display_name))
-
-#     # display_name = fields.Char(compute='_compute_display_name')
-
-#     # @api.one
-#     # @api.depends('name', 'default_code', 'future_display_name')
-#     # def _compute_display_name(self):
-#     #     if self.default_code:
-#     #         return '[%s] %s' % (self.default_code, self.name)
-#     #     else:
-#     #         return self.name
-
-#     # @api.depends(lambda self: (self._rec_name,) if self._rec_name else ())
-#     def _compute_display_name(self):
-#         logger.info('display name')
