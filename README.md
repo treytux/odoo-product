@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/treytux/odoo-product.svg)](https://travis-ci.org/treytux/odoo-product)
+
+
 ```product_attribute_extension ```
 ====
 Crea vistas para acceder a los tipos de atributos y a sus valores.
