@@ -11,7 +11,7 @@
             <field name="arch" type="xml">
                 <form string="Print label">
                     <group>
-                        <label string="Seleccione el formato de la etiqueta" colspan="4"/>
+                        <label string="Select label format" colspan="4"/>
                         <field name="report_id" widget="selection"/>
                         <field name="quantity" required="1"/>
                         <field name="include_service_product"/>
