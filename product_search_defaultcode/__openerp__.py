@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+###############################################################################
 #
 #    Trey, Kilobytes de Soluciones
-#    Copyright (C) 2014-Today Trey, Kilobytes de Soluciones (<http://www.trey.es>).
+#    Copyright (C) 2014-Today Trey, Kilobytes de Soluciones <www.trey.es>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -17,7 +17,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################
+###############################################################################
 
 {
     'name': 'Include default code to search',
@@ -25,7 +25,8 @@
     'summary': 'Include default code to search',
     'version': '0.1',
     'description': """
-        Add to product list view field 'default_code' and enables search on that field.
+        Add to product list view field 'default_code' and enables search on
+        that field.
     """,
     'author': 'Trey',
     'depends': [

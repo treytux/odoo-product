@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+###############################################################################
 #
 #    Trey, Kilobytes de Soluciones
-#    Copyright (C) 2014-Today Trey, Kilobytes de Soluciones (<http://www.trey.es>).
+#    Copyright (C) 2014-Today Trey, Kilobytes de Soluciones <www.trey.es>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -17,24 +17,24 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################
-from openerp import tools, SUPERUSER_ID
-from openerp.osv import fields, orm
-from openerp.tools.translate import _
+###############################################################################
+from openerp import models
 
 
-class product_template(orm.Model):
+class product_template(models.Model):
     _inherit = "product.template"
-    _columns = {
-    }
-    _defaults = {
-    }
 
-    # Modificar la busqueda por defecto para que busque por el campo 'default_code', ademas de por el campo 'name'
-    def name_search(self, cr, uid, name, args=None, operator='ilike', context=None, limit=100):
+    def name_search(self, cr, uid, name, args=None, operator='ilike',
+                    context=None, limit=100):
         args = args or []
         if name:
-            ids = self.search(cr, uid, ['|', ('name', operator, name), ('default_code', operator, name)] + args, limit=limit, context=context or {})
+            ids = self.search(
+                cr, uid,
+                ['|', ('name', operator, name),
+                 ('default_code', operator, name)] + args,
+                limit=limit,
+                context=context or {})
         else:
-            ids = self.search(cr, uid, args, limit=limit, context=context or {})
+            ids = self.search(cr, uid, args,
+                              limit=limit, context=context or {})
         return self.name_get(cr, uid, ids, context or {})
