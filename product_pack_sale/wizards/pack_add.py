@@ -30,14 +30,20 @@ class PackAdd(models.TransientModel):
 
     order_id = fields.Many2one(
         comodel_name='sale.order',
+        required=True,
         string='Order')
     product_id = fields.Many2one(
         comodel_name='product.template',
+        domain=[('is_pack', '=', False)],
         string='Pack')
     quantity = fields.Float(string="Quantity")
 
     @api.one
     def button_add(self):
-        _log.info('~'*100)
-        _log.info(self.env.context)
+        for pack in self.product_id.pack_ids:
+            self.env['sale.order.line'].create({
+                'order_id': self.order_id.id,
+                'product_id': self.product_id.id,
+                'product_uos_qty': pack.quantity * self.quantity,
+            })
         return {'type': 'ir.actions.act_window_close'}
