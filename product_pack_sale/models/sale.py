@@ -19,8 +19,6 @@
 #
 ###############################################################################
 from openerp import models, api, _
-import logging
-_log = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -28,15 +26,12 @@ class SaleOrder(models.Model):
 
     @api.one
     def action_pack_add(self):
-        _log.info('x'*100)
-        _log.info(self.id)
-
+        #@todo @tofix No se abre el asistente para introducir el pack y
+        #la cantidad
         cr, uid, context = self.env.args
         wiz_id = self.env['wiz.pack.add'].with_context(context).create({
             'order_id': self.id
         })
-        _log.info(context)
-        _log.info('x'*100)
         return {
             'name': _('Add pack'),
             'type': 'ir.actions.act_window',
