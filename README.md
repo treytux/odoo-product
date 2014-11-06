@@ -25,6 +25,11 @@ Imprimir la etiqueta ```product_label ``` desde los albaranes y presupuestos
 ====
 Hace visible el historico de los cambios de precio de los productos.
 
+```product_pack ```
+====
+Permitite crear productos virtuales como una colección de productos
+
+
 ```product_season ```
 ====
 Amplia la información de los productos con temporada, marca y fabricante

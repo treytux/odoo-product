@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- module: sale -->
+        <!-- inherited: sale.order -->
+        <!-- sale_order -->
+        <record id="sale_order_pack_form_view" model="ir.ui.view">
+            <field name="name">sale_order_pack_form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <data>
+<!--
+                     <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="before">
+                        <button name="action_pack_add" string="Add pack" type="object" icon="gtk-go-forward" help="Add pack"/>
+                    </xpath>
+ -->
+                    <xpath expr="//field[@name='order_line']" position="before">
+                        <!-- fa fa-list -->
+                        <button name="action_pack_add" string="Add pack" type="object" icon="gtk-go-forward" help="Add pack"/>
+                    </xpath>
+
+                </data>
+            </field>
+        </record>
+
+    </data>
+</openerp>

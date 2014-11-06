@@ -18,21 +18,22 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+from openerp import models, fields, api
 
-{
-    'name': 'Ref. interna en el nombre del producto',
-    'category': 'customize',
-    'summary': 'Añade la referencia interna al nombre del producto',
-    'version': '0.1',
-    'description': """
-Añade la referencia interna al nombre del producto
-    """,
-    'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
-    'depends': [
-        'base',
-        'product',
-    ],
-    'data': [],
-    'installable': True,
-    'application': False,
-}
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    pack_ids = fields.One2many(
+        comodel_name='product.pack',
+        inverse_name='product_tmpl_id',
+        string='Pack')
+    is_pack = fields.Boolean(
+        compute='_compute_is_pack',
+        string='Is a pack',
+        store=True)
+
+    @api.one
+    @api.depends('pack_ids')
+    def _compute_is_pack(self):
+        self.is_pack = bool(self.pack_ids)

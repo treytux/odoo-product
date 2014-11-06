@@ -27,7 +27,7 @@
     'description': """
         Allows searching by EAN13 code field in list product.
     """,
-    'author': 'Trey',
+    'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
     'depends': ['base', 'product'],
     'data': [
         'views/product_view.xml',

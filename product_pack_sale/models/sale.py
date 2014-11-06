@@ -18,21 +18,33 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+from openerp import models, api, _
+import logging
+_log = logging.getLogger(__name__)
 
-{
-    'name': 'Ref. interna en el nombre del producto',
-    'category': 'customize',
-    'summary': 'Añade la referencia interna al nombre del producto',
-    'version': '0.1',
-    'description': """
-Añade la referencia interna al nombre del producto
-    """,
-    'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
-    'depends': [
-        'base',
-        'product',
-    ],
-    'data': [],
-    'installable': True,
-    'application': False,
-}
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    @api.one
+    def action_pack_add(self):
+        _log.info('x'*100)
+        _log.info(self.id)
+
+        cr, uid, context = self.env.args
+        wiz_id = self.env['wiz.pack.add'].with_context(context).create({
+            'order_id': self.id
+        })
+        _log.info(context)
+        _log.info('x'*100)
+        return {
+            'name': _('Add pack'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'wiz.pack.add',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'nodestroy': True,
+            'context': context,
+            'res_id': wiz_id.id,
+            'target': 'new',
+        }

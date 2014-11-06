@@ -18,21 +18,20 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+from openerp import models, fields
 
-{
-    'name': 'Ref. interna en el nombre del producto',
-    'category': 'customize',
-    'summary': 'Añade la referencia interna al nombre del producto',
-    'version': '0.1',
-    'description': """
-Añade la referencia interna al nombre del producto
-    """,
-    'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
-    'depends': [
-        'base',
-        'product',
-    ],
-    'data': [],
-    'installable': True,
-    'application': False,
-}
+
+class ProductPack(models.Model):
+    _name = 'product.pack'
+    _description = 'Product Pack'
+
+    product_tmpl_id = fields.Many2one(
+        comodel_name='product.template',
+        string='Product template')
+    product_id = fields.Many2one(
+        comodel_name='product.product',
+        string='Product',
+        domain=[('is_pack', '=', False)])
+    quantity = fields.Float(
+        string='Quantity',
+        default=1.0)

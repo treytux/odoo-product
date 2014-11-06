@@ -18,21 +18,4 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-
-{
-    'name': 'Ref. interna en el nombre del producto',
-    'category': 'customize',
-    'summary': 'Añade la referencia interna al nombre del producto',
-    'version': '0.1',
-    'description': """
-Añade la referencia interna al nombre del producto
-    """,
-    'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
-    'depends': [
-        'base',
-        'product',
-    ],
-    'data': [],
-    'installable': True,
-    'application': False,
-}
+from . import pack_add

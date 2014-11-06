@@ -18,21 +18,26 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+from openerp import models, fields, api
+import logging
 
-{
-    'name': 'Ref. interna en el nombre del producto',
-    'category': 'customize',
-    'summary': 'Añade la referencia interna al nombre del producto',
-    'version': '0.1',
-    'description': """
-Añade la referencia interna al nombre del producto
-    """,
-    'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
-    'depends': [
-        'base',
-        'product',
-    ],
-    'data': [],
-    'installable': True,
-    'application': False,
-}
+_log = logging.getLogger(__name__)
+
+
+class PackAdd(models.TransientModel):
+    _name = 'wiz.pack.add'
+    _description = 'Add pack to sale order'
+
+    order_id = fields.Many2one(
+        comodel_name='sale.order',
+        string='Order')
+    product_id = fields.Many2one(
+        comodel_name='product.template',
+        string='Pack')
+    quantity = fields.Float(string="Quantity")
+
+    @api.one
+    def button_add(self):
+        _log.info('~'*100)
+        _log.info(self.env.context)
+        return {'type': 'ir.actions.act_window_close'}

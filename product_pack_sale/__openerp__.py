@@ -20,19 +20,23 @@
 ###############################################################################
 
 {
-    'name': 'Ref. interna en el nombre del producto',
-    'category': 'customize',
-    'summary': 'Añade la referencia interna al nombre del producto',
-    'version': '0.1',
+    'name': 'Product Pack Sale',
+    'summary': 'Product pack',
+    'category': 'Sales management',
+    'version': '1.0',
     'description': """
-Añade la referencia interna al nombre del producto
     """,
     'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
+    'website': 'http://www.trey.es',
     'depends': [
-        'base',
-        'product',
+        'product_pack',
+        'sale'
     ],
-    'data': [],
+    'data': [
+        'views/sale_view.xml',
+        'wizards/pack_add.xml'
+    ],
+    'test': [
+    ],
     'installable': True,
-    'application': False,
 }

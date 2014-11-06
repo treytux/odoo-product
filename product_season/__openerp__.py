@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+###############################################################################
 #
 #    Trey, Kilobytes de Soluciones
 #    Copyright (C) 2014-Today Trey, Kilobytes de Soluciones <www.trey.es>
@@ -17,7 +17,7 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-##############################################################################
+###############################################################################
 
 {
     'name': 'Product Season',
@@ -27,7 +27,7 @@
     'description': """
 Añade informacion de temporada a los productos, ademas de otra informacion
     """,
-    'author': 'Trey <www.trey.es>',
+    'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
     'depends': ['base', 'product', 'sale'],
     'data': [
         'views/season.xml',
