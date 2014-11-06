@@ -24,22 +24,16 @@ from openerp import models, api, _
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.one
+    @api.multi
     def action_pack_add(self):
-        #@todo @tofix No se abre el asistente para introducir el pack y
-        #la cantidad
-        cr, uid, context = self.env.args
-        wiz_id = self.env['wiz.pack.add'].with_context(context).create({
-            'order_id': self.id
-        })
-        return {
-            'name': _('Add pack'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'wiz.pack.add',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'nodestroy': True,
-            'context': context,
-            'res_id': wiz_id.id,
-            'target': 'new',
-        }
+        wiz_obj = self.env['wiz.pack.add']
+        wiz_values = {}
+        wiz = wiz_obj.create(wiz_values)
+        return {'name': _('Add pack'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'wiz.pack.add',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_id': wiz.id,
+                'target': 'new',
+                }
