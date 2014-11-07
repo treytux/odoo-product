@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-from openerp import models, fields, api
+from openerp import models, fields, api, osv
 import logging
 
 _log = logging.getLogger(__name__)
@@ -32,18 +32,39 @@ class PackAdd(models.TransientModel):
         comodel_name='sale.order',
         required=True,
         string='Order')
-    product_id = fields.Many2one(
+    product_tmpl_id = fields.Many2one(
         comodel_name='product.template',
-        domain=[('is_pack', '=', False)],
+        domain=[('is_pack', '=', True)],
         string='Pack')
     quantity = fields.Float(string="Quantity")
+    order_line_id = fields.Many2one(
+        comodel_name='sale.order.line',
+        string='Order line')
 
     @api.one
     def button_add(self):
-        for pack in self.product_id.pack_ids:
-            self.env['sale.order.line'].create({
-                'order_id': self.order_id.id,
-                'product_id': self.product_id.id,
-                'product_uos_qty': pack.quantity * self.quantity,
-            })
+
+        ## Crea una linea por cada producto que tiene el pack,
+        # pero habra que meter otra por el pack con su importe y poner dto
+        # 100 % a las del pack
+        products = self.env['product.product'].search([
+            ('product_tmpl_id', '=', self.product_tmpl_id.id)])
+        data = {
+                'order_id': self._context['active_id'],
+                'product_id': products.id,
+                'product_uom_qty': self.quantity,
+                'product_uos_qty': self.quantity,
+            }
+        self.env['sale.order.line'].create(data)
+
+        for pack in self.product_tmpl_id.pack_ids:
+            data = {
+                    'order_id': self._context['active_id'],
+                    'product_id': pack.product_id.id,
+                    'product_uom_qty': pack.quantity * self.quantity,
+                    'product_uos_qty': pack.quantity * self.quantity,
+                    'discount': 100,
+                }
+            self.env['sale.order.line'].create(data)
+
         return {'type': 'ir.actions.act_window_close'}
