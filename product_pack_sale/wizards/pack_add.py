@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-from openerp import models, fields, api, osv
+from openerp import models, fields, api
 import logging
 
 _log = logging.getLogger(__name__)
@@ -37,34 +37,50 @@ class PackAdd(models.TransientModel):
         domain=[('is_pack', '=', True)],
         string='Pack')
     quantity = fields.Float(string="Quantity")
-    order_line_id = fields.Many2one(
-        comodel_name='sale.order.line',
-        string='Order line')
+    price_content_pack = fields.Selection(
+        selection=[
+            ('show_price', 'Show price'),
+            ('hide_price', 'Hide price'),
+        ],
+        string='Price content pack',
+        default='show_price',
+        help="Show or hide product prices that make the content of the pack.")
 
     @api.one
     def button_add(self):
-
-        ## Crea una linea por cada producto que tiene el pack,
-        # pero habra que meter otra por el pack con su importe y poner dto
-        # 100 % a las del pack
+        # Crear una linea para el producto pack
         products = self.env['product.product'].search([
             ('product_tmpl_id', '=', self.product_tmpl_id.id)])
         data = {
-                'order_id': self._context['active_id'],
-                'product_id': products.id,
-                'product_uom_qty': self.quantity,
-                'product_uos_qty': self.quantity,
+            'order_id': self._context['active_id'],
+            'product_id': products.id,
+            'product_uom_qty': self.quantity,
+            'product_uos_qty': self.quantity,
             }
         self.env['sale.order.line'].create(data)
 
-        for pack in self.product_tmpl_id.pack_ids:
-            data = {
+        # Crear una linea por cada producto que tiene el pack
+
+        if self.price_content_pack == 'show_price':
+            for pack in self.product_tmpl_id.pack_ids:
+                data = {
                     'order_id': self._context['active_id'],
                     'product_id': pack.product_id.id,
                     'product_uom_qty': pack.quantity * self.quantity,
                     'product_uos_qty': pack.quantity * self.quantity,
                     'discount': 100,
-                }
-            self.env['sale.order.line'].create(data)
+                    }
+                self.env['sale.order.line'].create(data)
+
+        if self.price_content_pack == 'hide_price':
+            for pack in self.product_tmpl_id.pack_ids:
+                data = {
+                    'order_id': self._context['active_id'],
+                    'product_id': pack.product_id.id,
+                    'product_uom_qty': pack.quantity * self.quantity,
+                    'product_uos_qty': pack.quantity * self.quantity,
+                    'price_unit': 0,
+                    }
+                self.env['sale.order.line'].create(data)
 
         return {'type': 'ir.actions.act_window_close'}
