@@ -63,8 +63,10 @@ class WizProductLabelFromSale(models.TransientModel):
                                          product_ids)
 
         product_ids = filter(lambda x: x, product_ids)
+
         if not product_ids:
             raise exceptions.Warning(_('No labels for print'))
+
         else:
             return {
                 'type': 'ir.actions.report.xml',

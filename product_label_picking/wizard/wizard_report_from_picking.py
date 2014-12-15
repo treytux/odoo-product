@@ -18,12 +18,24 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-from openerp import models, fields, exceptions, _
+from openerp import models, fields, _
 
 
-class WizProductLabelFromPicking(models.TransientModel):
-    _inherit = 'wiz.product.label'
+class WizProductLabelPicking(models.TransientModel):
+    _name = 'wiz.product.label.picking'
+    _description = 'Wizard to report label from picking'
 
+    def _get_default_report(self):
+        report_ids = self.env['ir.actions.report.xml'].search(
+            [('name', 'ilike', 'label_picking')])
+        return report_ids[0]
+
+    report_id = fields.Many2one(
+        comodel_name='ir.actions.report.xml',
+        string='Report',
+        domain=[('name', 'ilike', 'label_picking')],
+        default=_get_default_report,
+        required=True)
     quantity = fields.Selection(
         selection=[
             ('one', 'One label for each product'),
@@ -36,27 +48,10 @@ class WizProductLabelFromPicking(models.TransientModel):
 
     def button_print_from_picking(self, cr, uid, ids, context=None):
         wiz = self.browse(cr, uid, ids[0], context=context)
-        move_ids = self.pool['stock.move'].search(
-            cr, uid, [('picking_id', 'in', context.get('active_ids', []))])
-        moves = self.pool['stock.move'].browse(cr, uid, move_ids)
 
-        product_ids = []
-        if wiz.quantity == 'one':
-            product_ids = [m.product_id.id for m in moves]
-            product_ids = list(set(product_ids))
-        elif wiz.quantity == 'line':
-            product_ids = [m.product_id.id for m in moves]
-        elif wiz.quantity == 'total':
-            for m in moves:
-                product_ids = product_ids + (
-                    [m.product_id.id] * int(m.product_qty))
-
-        product_ids = filter(lambda x: x, product_ids)
-        if not product_ids:
-            raise exceptions.Warning(_('No labels for print'))
-        else:
-            return {
-                'type': 'ir.actions.report.xml',
-                'report_name': wiz.report_id.report_name,
-                'datas': {'ids': product_ids},
-            }
+        picking_ids = context.get('active_ids', [])
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': wiz.report_id.report_name,
+            'datas': {'ids': picking_ids},
+        }

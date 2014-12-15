@@ -19,24 +19,4 @@
 #
 ###############################################################################
 
-{
-    'name': 'Product Label Picking',
-    'summary': 'Product label from pickings',
-    'category': 'Sales management',
-    'version': '1.0',
-    'description': """
-    """,
-    'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
-    'website': 'http://www.trey.es',
-    'depends': [
-        'product_label',
-        'stock'
-    ],
-    'data': [
-        'wizard/wizard_report_from_picking.xml',
-        'reports/report_product_label_picking.xml',
-    ],
-    'test': [
-    ],
-    'installable': True,
-}
+from . import parser
