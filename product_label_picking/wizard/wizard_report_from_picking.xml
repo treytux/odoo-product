@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        <!-- wiz.product.label.picking -->
-        <!-- product_label_picking -->
+
+        <!-- wiz.product.label -->
+        <!-- product_label -->
         <!-- Print label -->
-        <record id="wizard_product_label_picking" model="ir.ui.view">
+        <record id="wizard_product_label_from_picking" model="ir.ui.view">
             <field name="name">Print label</field>
-            <field name="model">wiz.product.label.picking</field>
+            <field name="model">wiz.product.label</field>
             <field name="arch" type="xml">
                 <form string="Print label">
                     <group>
@@ -24,12 +25,12 @@
             </field>
         </record>
 
-        <act_window id="action_product_label_picking"
-            name="Print label"
+        <act_window id="action_product_label_from_picking"
+            name="Print labels"
             src_model="stock.picking"
-            res_model="wiz.product.label.picking"
+            res_model="wiz.product.label"
+            view_id="wizard_product_label_from_picking"
             view_mode="form"
-            view_id="wizard_product_label_picking"
             target="new"
             key2="client_action_multi"/>
     </data>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- @TODO Heredar el informe para anadir el partner -->
+<!--
+        <template id="label_document_inherit_picking" inherit_id="product_label.label_document">
+            <xpath expr="t" position="replace">
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <style>
+                            body {
+                                color: #000;
+                                font-family: Arial, Helvetica,"Lucida Grande", serif;
+                                font-size: 22pt; /* 14pt */
+                                letter-spacing:0.0px;
+                                line-height: 1.4em;
+                                margin:0;
+                                padding:0;
+                                word-spacing:1px;
+                            }
+                            .tbig {
+                                font-size: 26pt; /* 17pt */
+                                font-weight: bold;
+                                float: left;
+                                display: inline-block;
+                            }
+                            .tsmall {
+                                font-size: 10pt;
+                                font-weight: bold;
+                                float: left;
+                                display: inline-block;
+                            }
+                            .tinvert {
+                                background: #000;
+                                color: #fff;
+                            }
+                        </style>
+                        <h2>heredadoooooooooooooooooooooooooooooooooooo</h2>
+                        <t t-foreach="get_products(o)" t-as="product">
+                            <t t-set="partner" t-value="get_partner(o)"/>
+                            <t t-if="partner">
+                                <div class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
+                                    <span class="tsmall" t-esc="partner.name"/>
+                                </div>
+                            </t>
+                            <div class="row" style="text-align: center;">
+                                <img t-att-src="'data:image/png;base64,%s' % printBarcode(product.ean13, 350, 80)"/>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
+                                    <span t-esc="product.default_code or 'codigo'"/>
+                                </div>
+                                <div class="col-xs-6" style="margin-top: 2px;">
+                                    <span class="tsmall" style="margin: 5px 0px 0px 5px;">EUR</span>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </xpath>
+        </template>
+ -->
+
+
+        <!-- report_type="qweb-pdf" -->
+<!--         <report
+            id="action_label"
+            string="Sale label (product_label)"
+            model="product.product"
+            report_type="qweb-pdf"
+            name="product_label.label"
+            file="product_label.label"
+            menu="True"
+         />
+ -->
+        <!-- Action -->
+<!--         <record id="action_label" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="product_label.paperformat_product_label"/>
+            <field name="key">product_label</field>
+        </record>
+ -->
+        <!-- Views -->
+<!--         <template id="label">
+            <t t-foreach="doc_ids" t-as="doc_id">
+                <t t-raw="translate_doc(doc_id, doc_model, 'name', 'product_label.label_document')"/>
+            </t>
+        </template>
+
+        <template id="label_document">
+            <t t-call="report.html_container">
+                <div class="page">
+                    <style>
+                        body {
+                            color: #000;
+                            font-family: Arial, Helvetica,"Lucida Grande", serif;
+                            font-size: 22pt; /* 14pt */
+                            letter-spacing:0.0px;
+                            line-height: 1.4em;
+                            margin:0;
+                            padding:0;
+                            word-spacing:1px;
+                        }
+                        .tbig {
+                            font-size: 26pt; /* 17pt */
+                            font-weight: bold;
+                            float: left;
+                            display: inline-block;
+                        }
+                        .tsmall {
+                            font-size: 10pt;
+                            font-weight: bold;
+                            float: left;
+                            display: inline-block;
+                        }
+                        .tinvert {
+                            background: #000;
+                            color: #fff;
+                        }
+                    </style>
+                    <div class="row" style="text-align: center;">
+                       <img t-att-src="'data:image/png;base64,%s' % printBarcode(o.ean13, 350, 80)"/>
+                    </div>
+                    <div class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
+                        <span t-esc="o.name"/>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
+                            <span t-esc="o.default_code or 'codigo'"/>
+                        </div>
+                        <div class="col-xs-6" style="margin-top: 2px;">
+                            <span class="tbig tinvert" t-esc="formatCurrency(getPricelist(o))"/>
+                            <span class="tsmall" style="margin: 5px 0px 5px 5px;">EUR</span>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+ -->
+    </data>
+</openerp>

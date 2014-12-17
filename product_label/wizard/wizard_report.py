@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-from openerp import models, fields
+from openerp import models, fields, api
 
 
 class WizProductLabel(models.TransientModel):
@@ -37,11 +37,59 @@ class WizProductLabel(models.TransientModel):
         default=_get_default_report,
         required=True)
 
-    def button_print(self, cr, uid, ids, context=None):
-        wiz = self.browse(cr, uid, ids[0], context=context)
-        datas = {'ids': context.get('active_ids', [])}
+    def getPrice(self, product):
+        cr, uid, context = self.env.args
+        pricelists = self.env['product.pricelist'].search([
+            ('type', '=', 'sale')])
+
+        if len(pricelists) > 1:
+            pricelists = self.env['product.pricelist'].search([
+                ('name', 'ilike', 'Public Pricelist'), ('type', '=', 'sale')])
+        if pricelists:
+            prices = pricelists[0].price_get(product.id, 1)
+            price_unit = prices[pricelists[0].id]
+            price = product.taxes_id.compute_all(price_unit, 1)
+
+            return price['total_included']
+        else:
+            return 0.00
+
+    @api.multi
+    def button_print(self):
+        datas = {'ids': self.env.context['active_ids']}
+
+        # Ademas de pasar los ids de los productos, vamos a pasar todos los
+        # valores que necesitaremos en el informe
+        # context = {'data': {'product_name': 'lalala',
+        #                     'product_ean13': '5710633562381',
+        #                     'product_price': 10.56}}
+        # context = {'data': {'product_id01': [
+        #                                   'default_code': '1457ER',
+        #                                   'name': 'lalala',
+        #                                   'ean13': '5710633562381',
+        #                                   'price': 10.56]
+        #                      'product_id02': [
+        #                                   'default_code': '1457ER',
+        #                                   'name': 'lalala',
+        #                                   'ean13': '5710633562381',
+        #                                   'price': 10.56]}
+
+        ctx = {}
+        for product_id in self.env.context['active_ids']:
+            if 'data' not in ctx:
+                ctx['data'] = {}
+            product = self.env['product.product'].browse(product_id)
+
+            ctx['data'][product_id] = {
+                'default_code': product.default_code,
+                'name': product.name,
+                'ean13': product.ean13,
+                'price': self.getPrice(product)
+            }
+
         return {
             'type': 'ir.actions.report.xml',
-            'report_name': wiz.report_id.report_name,
+            'report_name': self.report_id.report_name,
             'datas': datas,
+            'context': ctx,
         }

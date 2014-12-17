@@ -18,24 +18,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-from openerp import models, fields, _
+from openerp import api, models, fields, _, exceptions
 
 
-class WizProductLabelPicking(models.TransientModel):
-    _name = 'wiz.product.label.picking'
-    _description = 'Wizard to report label from picking'
+class WizProductLabelFromPicking(models.TransientModel):
+    _inherit = 'wiz.product.label'
 
-    def _get_default_report(self):
-        report_ids = self.env['ir.actions.report.xml'].search(
-            [('name', 'ilike', 'label_picking')])
-        return report_ids[0]
-
-    report_id = fields.Many2one(
-        comodel_name='ir.actions.report.xml',
-        string='Report',
-        domain=[('name', 'ilike', 'label_picking')],
-        default=_get_default_report,
-        required=True)
     quantity = fields.Selection(
         selection=[
             ('one', 'One label for each product'),
@@ -46,12 +34,50 @@ class WizProductLabelPicking(models.TransientModel):
         default='total',
         translate=True)
 
-    def button_print_from_picking(self, cr, uid, ids, context=None):
-        wiz = self.browse(cr, uid, ids[0], context=context)
+    @api.multi
+    def button_print_from_picking(self):
+        import logging
+        _log = logging.getLogger(__name__)
+        _log.info(':'*100)
+        _log.info('//button_print_from_picking')
+        # # _log.info('self' % self)
+        # # _log.info('self.env' % self.env)
+        # # _log.info('self.env.context' % self.env.context)
+        _log.info('self.env.context[active_ids]: %s' % self.env.context['active_ids'])
+        # # # Escribir en el campo del asistente el pedido de venta (lo
+        # # # necesitaremos en el asistente print label)
+        # # self.write({'order_id': self.env.context['active_id']})
 
-        picking_ids = context.get('active_ids', [])
-        return {
-            'type': 'ir.actions.report.xml',
-            'report_name': wiz.report_id.report_name,
-            'datas': {'ids': picking_ids},
-        }
+        moves = self.env['stock.move'].search(
+            [('picking_id', 'in', self.env.context['active_ids'])])
+        _log.info('moves: %s' % moves)
+        product_ids = []
+
+        if self.quantity == 'one':
+            product_ids = [m.product_id.id for m in moves]
+            product_ids = list(set(product_ids))
+        elif self.quantity == 'line':
+            product_ids = [m.product_id.id for m in moves]
+        elif self.quantity == 'total':
+            for m in moves:
+                product_ids = product_ids + (
+                    [m.product_id.id] * int(m.product_uom_qty))
+
+        if not self.include_service_product:
+            products = self.env['product.product'].browse(
+                list(set(product_ids)))
+            for product in products:
+                if product.type == 'service':
+                    product_ids = filter(lambda x: x != product.id,
+                                         product_ids)
+
+        product_ids = filter(lambda x: x, product_ids)
+        _log.info('product_ids %s' % product_ids)
+        if not product_ids:
+            raise exceptions.Warning(_('No labels for print'))
+        else:
+            return {
+                'type': 'ir.actions.report.xml',
+                'report_name': self.report_id.report_name,
+                'datas': {'ids': product_ids},
+            }

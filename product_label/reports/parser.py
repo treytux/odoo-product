@@ -18,12 +18,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-
-from openerp import models
+from openerp import models, exceptions, _
 from functools import partial
-import logging
-
-_log = logging.getLogger(__name__)
+from reportlab.graphics.barcode import createBarcodeDrawing
 
 
 class ProductLabelReport(models.AbstractModel):
@@ -31,17 +28,21 @@ class ProductLabelReport(models.AbstractModel):
 
     def render_html(self, cr, uid, ids, data=None, context=None):
         report_obj = self.pool['report']
-        purchase_obj = self.pool['product.product']
+        product_obj = self.pool['product.product']
         report = report_obj._get_report_from_name(
             cr, uid, 'product_label.label')
-        selected_orders = purchase_obj.browse(cr, uid, ids, context=context)
+        selected_orders = product_obj.browse(cr, uid, ids, context=context)
 
         docargs = {
             'doc_ids': ids,
             'doc_model': report.model,
             'docs': selected_orders,
             'formatCurrency': self.formatCurrency,
-            'get_pricelist': partial(self.get_pricelist, cr,
+            'printBarcode': partial(self.printBarcode, cr,
+                                    uid, context=context),
+            'getDataContext': partial(self.getDataContext, cr,
+                                      uid, context=context),
+            'getFieldValue': partial(self.getFieldValue, cr,
                                      uid, context=context)
         }
 
@@ -53,22 +54,23 @@ class ProductLabelReport(models.AbstractModel):
     def formatCurrency(self, value):
         return str('%.2f' % value).replace('.', ',')
 
-    def get_pricelist(self, cr, uid, product, context=None):
-        pricelist_ids = self.pool['product.pricelist'].search(
-            cr, uid, [('type', '=', 'sale')])
+    def printBarcode(self, cr, uid, value, width, height, context=None):
+        try:
+            width, height = int(width), int(height)
+            barcode = createBarcodeDrawing(
+                'EAN13', value=value, format='png', width=width, height=height)
+            barcode = barcode.asString('png')
+            barcode = barcode.encode('base64', 'strict')
+        except (ValueError, AttributeError):
+            # raise exceptions.HTTPException(
+            #     description='Cannot convert into barcode.')
+            raise exceptions.Warning(_('Cannot convert into barcode.'))
+        return barcode
 
-        if len(pricelist_ids) > 1:
-            pricelist_ids = self.pool.get('product.pricelist').search(
-                cr, uid,
-                [('name', 'ilike', 'Public Pricelist'), ('type', '=', 'sale')])
+    def getDataContext(self, cr, uid, context=None):
+        return context['data']
 
-        if pricelist_ids:
-            prices = self.pool.get('product.pricelist').price_get(
-                cr, uid, pricelist_ids,
-                product.id, 1, context=context)
-            price_unit = prices[pricelist_ids[0]]
-            price = self.pool.get('account.tax').compute_all(
-                cr, uid, product.taxes_id, price_unit, 1)
-            return price['total_included']
-        else:
-            return 0.00
+    def getFieldValue(self, cr, uid, product_id, field, context=None):
+        return context['data'][product_id][field]
+
+

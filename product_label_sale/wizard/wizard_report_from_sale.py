@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-from openerp import models, fields, exceptions, _
+from openerp import api, models, fields, exceptions, _
 
 
 class WizProductLabelFromSale(models.TransientModel):
@@ -36,40 +36,55 @@ class WizProductLabelFromSale(models.TransientModel):
     include_service_product = fields.Boolean(
         string='Include service products',
         default=False)
+    order_id = fields.Many2one(
+        comodel_name='sale.order',
+        string='Sale Order',
+        readonly=True)
 
-    def button_print_from_sale(self, cr, uid, ids, context=None):
-        wiz = self.browse(cr, uid, ids[0], context=context)
-        move_ids = self.pool['sale.order.line'].search(
-            cr, uid, [('order_id', 'in', context.get('active_ids', []))])
-        moves = self.pool['sale.order.line'].browse(cr, uid, move_ids)
+    @api.multi
+    def button_print_from_sale(self):
+        import logging
+        _log = logging.getLogger(__name__)
+        _log.info('$'*100)
+        _log.info('//button_print_from_sale')
+        # _log.info('self' % self)
+        # _log.info('self.env' % self.env)
+        # _log.info('self.env.context' % self.env.context)
+        _log.info('self.env.context[active_ids]: %s' % self.env.context['active_ids'])
+        # # Escribir en el campo del asistente el pedido de venta (lo
+        # # necesitaremos en el asistente print label)
+        # self.write({'order_id': self.env.context['active_id']})
 
+        moves = self.env['sale.order.line'].search(
+            [('order_id', 'in', self.env.context['active_ids'])])
+        _log.info('moves: %s' % moves)
         product_ids = []
-        if wiz.quantity == 'one':
+
+        if self.quantity == 'one':
             product_ids = [m.product_id.id for m in moves]
             product_ids = list(set(product_ids))
-        elif wiz.quantity == 'line':
+        elif self.quantity == 'line':
             product_ids = [m.product_id.id for m in moves]
-        elif wiz.quantity == 'total':
+        elif self.quantity == 'total':
             for m in moves:
                 product_ids = product_ids + (
                     [m.product_id.id] * int(m.product_uom_qty))
 
-        if not wiz.include_service_product:
-            products = self.pool['product.product'].browse(
-                cr, uid, list(set(product_ids)))
+        if not self.include_service_product:
+            products = self.env['product.product'].browse(
+                list(set(product_ids)))
             for product in products:
                 if product.type == 'service':
                     product_ids = filter(lambda x: x != product.id,
                                          product_ids)
 
         product_ids = filter(lambda x: x, product_ids)
-
+        _log.info('product_ids %s' % product_ids)
         if not product_ids:
             raise exceptions.Warning(_('No labels for print'))
-
         else:
             return {
                 'type': 'ir.actions.report.xml',
-                'report_name': wiz.report_id.report_name,
+                'report_name': self.report_id.report_name,
                 'datas': {'ids': product_ids},
             }

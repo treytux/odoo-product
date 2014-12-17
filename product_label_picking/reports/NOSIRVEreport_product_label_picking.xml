@@ -4,28 +4,31 @@
 
         <!-- report_type="qweb-pdf" -->
         <report
-            id="action_label"
-            string="Sale label (product_label)"
-            model="product.product"
+            id="action_label_picking"
+            string="Product label picking"
+            model="stock.picking"
             report_type="qweb-pdf"
-            name="product_label.label"
-            file="product_label.label"
+            name="product_label_picking.label_picking"
+            file="product_label_picking.label_picking"
+            menu="False"
          />
 
         <!-- Action -->
-        <record id="action_label" model="ir.actions.report.xml">
+        <record id="action_label_picking" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="product_label.paperformat_product_label"/>
-            <field name="key">product_label</field>
         </record>
 
+
         <!-- Views -->
-        <template id="label">
+        <template id="label_picking">
             <t t-foreach="doc_ids" t-as="doc_id">
-                <t t-raw="translate_doc(doc_id, doc_model, 'name', 'product_label.label_document')"/>
+                <t t-raw="translate_doc(doc_id, doc_model, 'name', 'product_label_picking.label_picking_document')"/>
             </t>
         </template>
 
-        <template id="label_document">
+
+
+        <template id="label_picking_document">
             <t t-call="report.html_container">
                 <div class="page">
                     <style>
@@ -57,25 +60,27 @@
                         }
                     </style>
 
-                    <t t-foreach="getDataContext()" t-as="product_id">
+                    <t t-foreach="get_products(o)" t-as="product">
+                        <t t-set="partner" t-value="get_partner(o)"/>
+                        <t t-if="partner">
+                            <div class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
+                                <span class="tsmall" t-esc="partner.name"/>
+                            </div>
+                        </t>
                         <div class="row" style="text-align: center;">
-                           <img t-att-src="'data:image/png;base64,%s' % printBarcode(getFieldValue(product_id,'ean13'), 350, 80)"/>
-                        </div>
-                        <div class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
-                            <span t-esc="getFieldValue(product_id,'name')"/>
+                           <img t-att-src="'/report/barcode/EAN13/%s?width=%s&amp;height=%s' % (product.ean13 or '0000000000000', 350, 80)"/>
                         </div>
                         <div class="row">
                             <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
-                                <span t-esc="getFieldValue(product_id,'default_code') or 'codigo'"/>
+                                <span t-esc="product.default_code or 'codigo'"/>
                             </div>
                             <div class="col-xs-6" style="margin-top: 2px;">
-                                <span class="tbig tinvert" t-esc="formatCurrency(getFieldValue(product_id,'price'))"/>
-                                <span class="tsmall" style="margin: 5px 0px 5px 5px;">EUR</span>
+                                <span class="tsmall" style="margin: 5px 0px 0px 5px;">EUR</span>
                             </div>
                         </div>
-
                     </t>
-                 </div>
+
+                </div>
             </t>
         </template>
 
