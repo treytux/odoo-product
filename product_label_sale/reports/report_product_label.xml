@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <template id="label_picking_document">
+        <template id="label_sale_document">
             <div id="row0" class="row" style="text-align: center;">
                <img t-att-src="'data:image/png;base64,%s' % printBarcode(o.product_id.ean13, 350, 80)"/>
             </div>
@@ -11,11 +11,10 @@
             </div>
             <div id="row2" class="row">
                 <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
-                    <t t-if="getPartner(o)">
-                        <span class="tsmall" t-esc="formatSize(getPartner(o).name, 12)"/>
+                    <t t-if="show_origin">
+                        <span t-esc="formatSize(o.order_id.name, 10)"/>
                     </t>
                 </div>
-
                 <div class="col-xs-6" style="margin-top: 2px;">
                     <span class="tbig tinvert" t-esc="formatCurrency(o.price_unit)"/>
                     <span class="tsmall" style="margin: 5px 0px 5px 5px;">EUR</span>

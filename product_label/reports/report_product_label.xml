@@ -21,62 +21,57 @@
         <!-- Views -->
         <template id="label">
             <t t-foreach="doc_ids" t-as="doc_id">
-                <t t-raw="translate_doc(doc_id, doc_model, 'name', 'product_label.label_document')"/>
+                <t t-call="report.html_container">
+                    <div class="page">
+                        <style>
+                            body {
+                                color: #000;
+                                font-family: Arial, Helvetica,"Lucida Grande", serif;
+                                font-size: 22pt; /* 14pt */
+                                letter-spacing:0.0px;
+                                line-height: 1.4em;
+                                margin:0;
+                                padding:0;
+                                word-spacing:1px;
+                            }
+                            .tbig {
+                                font-size: 26pt; /* 17pt */
+                                font-weight: bold;
+                                float: left;
+                                display: inline-block;
+                            }
+                            .tsmall {
+                                font-size: 10pt;
+                                font-weight: bold;
+                                float: left;
+                                display: inline-block;
+                            }
+                            .tinvert {
+                                background: #000;
+                                color: #fff;
+                            }
+                        </style>
+                        <t t-raw="translate_doc(doc_id, doc_model, 'name', tmpl_name)"/>
+                    </div>
+                </t>
             </t>
         </template>
 
         <template id="label_document">
-            <t t-call="report.html_container">
-                <div class="page">
-                    <style>
-                        body {
-                            color: #000;
-                            font-family: Arial, Helvetica,"Lucida Grande", serif;
-                            font-size: 22pt; /* 14pt */
-                            letter-spacing:0.0px;
-                            line-height: 1.4em;
-                            margin:0;
-                            padding:0;
-                            word-spacing:1px;
-                        }
-                        .tbig {
-                            font-size: 26pt; /* 17pt */
-                            font-weight: bold;
-                            float: left;
-                            display: inline-block;
-                        }
-                        .tsmall {
-                            font-size: 10pt;
-                            font-weight: bold;
-                            float: left;
-                            display: inline-block;
-                        }
-                        .tinvert {
-                            background: #000;
-                            color: #fff;
-                        }
-                    </style>
-
-                    <t t-foreach="getDataContext()" t-as="product_id">
-                        <div class="row" style="text-align: center;">
-                           <img t-att-src="'data:image/png;base64,%s' % printBarcode(getFieldValue(product_id,'ean13'), 350, 80)"/>
-                        </div>
-                        <div class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
-                            <span t-esc="getFieldValue(product_id,'name')"/>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
-                                <span t-esc="getFieldValue(product_id,'default_code') or 'codigo'"/>
-                            </div>
-                            <div class="col-xs-6" style="margin-top: 2px;">
-                                <span class="tbig tinvert" t-esc="formatCurrency(getFieldValue(product_id,'price'))"/>
-                                <span class="tsmall" style="margin: 5px 0px 5px 5px;">EUR</span>
-                            </div>
-                        </div>
-
-                    </t>
-                 </div>
-            </t>
+            <div id="row0" class="row" style="text-align: center;">
+               <img t-att-src="'data:image/png;base64,%s' % printBarcode(o.ean13, 350, 80)"/>
+            </div>
+            <div id="row1" class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
+                <span t-esc="formatSize(o.name, 22)"/>
+            </div>
+            <div id="row2" class="row">
+                <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
+                </div>
+                <div class="col-xs-6" style="margin-top: 2px;">
+                    <span class="tbig tinvert" t-esc="formatCurrency(o.price)"/>
+                    <span class="tsmall" style="margin: 5px 0px 5px 5px;">EUR</span>
+                </div>
+            </div>
         </template>
 
     </data>

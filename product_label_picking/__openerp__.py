@@ -34,7 +34,6 @@
     ],
     'data': [
         'wizard/wizard_report_from_picking.xml',
-        # 'reports/report_product_label_picking.xml',
         'reports/report_product_label.xml',
     ],
     'test': [

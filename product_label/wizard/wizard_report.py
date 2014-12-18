@@ -58,38 +58,12 @@ class WizProductLabel(models.TransientModel):
     def button_print(self):
         datas = {'ids': self.env.context['active_ids']}
 
-        # Ademas de pasar los ids de los productos, vamos a pasar todos los
-        # valores que necesitaremos en el informe
-        # context = {'data': {'product_name': 'lalala',
-        #                     'product_ean13': '5710633562381',
-        #                     'product_price': 10.56}}
-        # context = {'data': {'product_id01': [
-        #                                   'default_code': '1457ER',
-        #                                   'name': 'lalala',
-        #                                   'ean13': '5710633562381',
-        #                                   'price': 10.56]
-        #                      'product_id02': [
-        #                                   'default_code': '1457ER',
-        #                                   'name': 'lalala',
-        #                                   'ean13': '5710633562381',
-        #                                   'price': 10.56]}
-
-        ctx = {}
-        for product_id in self.env.context['active_ids']:
-            if 'data' not in ctx:
-                ctx['data'] = {}
-            product = self.env['product.product'].browse(product_id)
-
-            ctx['data'][product_id] = {
-                'default_code': product.default_code,
-                'name': product.name,
-                'ean13': product.ean13,
-                'price': self.getPrice(product)
-            }
-
         return {
             'type': 'ir.actions.report.xml',
             'report_name': self.report_id.report_name,
             'datas': datas,
-            'context': ctx,
+            'context': {
+                'render_func': 'render_product_label',
+                'report_name': self.report_id.report_name
+            },
         }

@@ -34,6 +34,7 @@
     ],
     'data': [
         'wizard/wizard_report_from_sale.xml',
+        'reports/report_product_label.xml',
     ],
     'test': [
     ],

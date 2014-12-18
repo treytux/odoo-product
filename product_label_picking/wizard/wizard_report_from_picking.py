@@ -36,48 +36,34 @@ class WizProductLabelFromPicking(models.TransientModel):
 
     @api.multi
     def button_print_from_picking(self):
-        import logging
-        _log = logging.getLogger(__name__)
-        _log.info(':'*100)
-        _log.info('//button_print_from_picking')
-        # # _log.info('self' % self)
-        # # _log.info('self.env' % self.env)
-        # # _log.info('self.env.context' % self.env.context)
-        _log.info('self.env.context[active_ids]: %s' % self.env.context['active_ids'])
-        # # # Escribir en el campo del asistente el pedido de venta (lo
-        # # # necesitaremos en el asistente print label)
-        # # self.write({'order_id': self.env.context['active_id']})
-
         moves = self.env['stock.move'].search(
             [('picking_id', 'in', self.env.context['active_ids'])])
-        _log.info('moves: %s' % moves)
-        product_ids = []
 
-        if self.quantity == 'one':
-            product_ids = [m.product_id.id for m in moves]
-            product_ids = list(set(product_ids))
-        elif self.quantity == 'line':
-            product_ids = [m.product_id.id for m in moves]
+        if self.quantity == 'line':
+            move_ids = [
+                m.id for m in moves
+                if self.include_service_product
+                or (not self.include_service_product
+                    and m.product_id.type not in ('service'))
+            ]
         elif self.quantity == 'total':
+            move_ids = []
             for m in moves:
-                product_ids = product_ids + (
-                    [m.product_id.id] * int(m.product_uom_qty))
+                if self.include_service_product or (not
+                   self.include_service_product and m.product_id.type
+                   not in ('service')):
+                    move_ids = move_ids + (
+                        [m.id] * int(m.product_uom_qty))
 
-        if not self.include_service_product:
-            products = self.env['product.product'].browse(
-                list(set(product_ids)))
-            for product in products:
-                if product.type == 'service':
-                    product_ids = filter(lambda x: x != product.id,
-                                         product_ids)
-
-        product_ids = filter(lambda x: x, product_ids)
-        _log.info('product_ids %s' % product_ids)
-        if not product_ids:
+        if not move_ids:
             raise exceptions.Warning(_('No labels for print'))
         else:
             return {
                 'type': 'ir.actions.report.xml',
                 'report_name': self.report_id.report_name,
-                'datas': {'ids': product_ids},
+                'datas': {'ids': move_ids},
+                'context': {
+                    'render_func': 'render_product_picking_label',
+                    'report_name': self.report_id.report_name
+                }
             }
