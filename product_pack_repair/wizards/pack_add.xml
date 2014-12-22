@@ -27,7 +27,7 @@
 
         <act_window id="action_repair_wiz_pack_add"
             name="repair_wiz_pack_add"
-            src_model="sale.order"
+            src_model="repair.workorder"
             res_model="repair.wiz.pack.add"
             view_mode="form"
             target="new"

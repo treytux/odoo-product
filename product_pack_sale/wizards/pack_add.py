@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-from openerp import models, fields, api
+from openerp import models, fields, api, _, exceptions
 import logging
 
 _log = logging.getLogger(__name__)
@@ -48,6 +48,11 @@ class PackAdd(models.TransientModel):
 
     @api.one
     def button_add(self):
+        # Comprobar que han elegido un producto
+        if not self.product_tmpl_id:
+            raise exceptions.Warning(
+                _('You must introduce a pack.'))
+
         # Crear una linea para el producto pack
         products = self.env['product.product'].search([
             ('product_tmpl_id', '=', self.product_tmpl_id.id)])
