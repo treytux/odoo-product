@@ -3,13 +3,24 @@
     <data>
 
         <template id="label_sale_document">
-            <div id="row0" class="row" style="text-align: center;">
-               <img t-att-src="'data:image/png;base64,%s' % printBarcode(o.product_id.ean13, 350, 80)"/>
+            <section class="header">
+                <div id="row0" class="row">
+                    <div class="col-xs-12">
+                        <div class="image-container">
+                            <div class="image-cropper">
+                                <img class="top" t-att-src="'data:image/png;base64,%s' % printBarcode(o.product_id.ean13, 350, 80)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div id="row1" class="row" style="margin-bottom: 0px; min-height: 12px; text-align: center">
+                <span t-field="o.product_id.ean13" class="small"/>
             </div>
-            <div id="row1" class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
+            <div id="row2" class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
                 <span t-esc="formatSize(o.product_id.name, 22)"/>
             </div>
-            <div id="row2" class="row">
+            <div id="row3" class="row">
                 <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
                     <t t-if="show_origin">
                         <span t-esc="formatSize(o.order_id.name, 10)"/>

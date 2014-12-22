@@ -50,6 +50,21 @@
                                 background: #000;
                                 color: #fff;
                             }
+                            /* http://www.squareonemd.co.uk/how-to-crop-an-image-with-a-css-class/ */
+                            .image-container {
+                                width: 366px;
+                                text-align: center;
+                            }
+                            .image-cropper {
+                                position: relative;
+                                height: 45px;
+                                overflow: hidden;
+                            }
+                            .small {
+                                font-size: 10pt;
+                                font-weight: bold;
+                            }
+
                         </style>
                         <t t-raw="translate_doc(doc_id, doc_model, 'name', tmpl_name)"/>
                     </div>
@@ -58,13 +73,24 @@
         </template>
 
         <template id="label_document">
-            <div id="row0" class="row" style="text-align: center;">
-               <img t-att-src="'data:image/png;base64,%s' % printBarcode(o.ean13, 350, 80)"/>
+            <section class="header">
+                <div id="row0" class="row">
+                    <div class="col-xs-12">
+                        <div class="image-container">
+                            <div class="image-cropper">
+                                <img class="top" t-att-src="'data:image/png;base64,%s' % printBarcode(o.ean13, 350, 80)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div id="row1" class="row" style="margin-bottom: 0px; min-height: 12px; text-align: center">
+                <span t-field="o.ean13" class="small"/>
             </div>
-            <div id="row1" class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
+            <div id="row2" class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
                 <span t-esc="formatSize(o.name, 22)"/>
             </div>
-            <div id="row2" class="row">
+            <div id="row3" class="row">
                 <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
                 </div>
                 <div class="col-xs-6" style="margin-top: 2px;">

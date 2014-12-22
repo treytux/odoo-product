@@ -3,19 +3,29 @@
     <data>
 
         <template id="label_picking_document">
-            <div id="row0" class="row" style="text-align: center;">
-               <img t-att-src="'data:image/png;base64,%s' % printBarcode(o.product_id.ean13, 350, 80)"/>
+            <section class="header">
+                <div id="row0" class="row">
+                    <div class="col-xs-12">
+                        <div class="image-container">
+                            <div class="image-cropper">
+                                <img class="top" t-att-src="'data:image/png;base64,%s' % printBarcode(o.product_id.ean13, 350, 80)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div id="row1" class="row" style="margin-bottom: 0px; min-height: 12px; text-align: center">
+                <span t-field="o.product_id.ean13" class="small"/>
             </div>
-            <div id="row1" class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
+            <div id="row2" class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
                 <span t-esc="formatSize(o.product_id.name, 22)"/>
             </div>
-            <div id="row2" class="row">
+            <div id="row3" class="row">
                 <div class="col-xs-6" style="text-align: left; margin-top: 2px;">
                     <t t-if="getPartner(o)">
                         <span class="tsmall" t-esc="formatSize(getPartner(o).name, 12)"/>
                     </t>
                 </div>
-
                 <div class="col-xs-6" style="margin-top: 2px;">
                     <span class="tbig tinvert" t-esc="formatCurrency(o.price_unit)"/>
                     <span class="tsmall" style="margin: 5px 0px 5px 5px;">EUR</span>
