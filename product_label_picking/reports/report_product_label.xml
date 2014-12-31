@@ -8,7 +8,9 @@
                     <div class="col-xs-12">
                         <div class="image-container">
                             <div class="image-cropper">
-                                <img class="top" t-att-src="'data:image/png;base64,%s' % printBarcode(o.product_id.ean13, 350, 80)"/>
+                                <t t-if="o.product_id.ean13">
+                                    <img class="top" t-att-src="'data:image/png;base64,%s' % printBarcode(o.product_id.ean13, 350, 80)"/>
+                                </t>
                             </div>
                         </div>
                     </div>
@@ -17,7 +19,7 @@
             <div id="row1" class="row" style="margin-bottom: 0px; min-height: 12px; text-align: center">
                 <span t-field="o.product_id.ean13" class="small"/>
             </div>
-            <div id="row2" class="row" style="margin-bottom: 0px; min-height: 85px; text-align: center">
+            <div id="row2" class="row" style="margin-bottom: 0px; min-height: 80px; text-align: center">
                 <span t-esc="formatSize(o.product_id.name, 22)"/>
             </div>
             <div id="row3" class="row">
