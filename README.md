@@ -37,3 +37,7 @@ Amplia la información de los productos con temporada, marca y fabricante
 ```product_variant_search_ean13 ```
 ====
 Permite la búsqueda por el campo 'Código EAN13' en el listado de productos de variantes.
+
+```product_default_code_unique ```
+====
+Comprueba que el default_code del producto, sea unico mostrando un aviso.
