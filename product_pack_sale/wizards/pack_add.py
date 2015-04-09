@@ -1,23 +1,7 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#
-#    Trey, Kilobytes de Soluciones
-#    Copyright (C) 2014-Today Trey, Kilobytes de Soluciones <www.trey.es>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-###############################################################################
+# License, author and contributors information in:
+# __openerp__.py file at the root folder of this module.
+
 from openerp import models, fields, api, _, exceptions
 import logging
 
@@ -31,12 +15,16 @@ class PackAdd(models.TransientModel):
     order_id = fields.Many2one(
         comodel_name='sale.order',
         required=True,
-        string='Order')
+        string='Order'
+    )
     product_tmpl_id = fields.Many2one(
         comodel_name='product.template',
         domain=[('is_pack', '=', True)],
-        string='Pack')
-    quantity = fields.Float(string="Quantity")
+        string='Pack'
+    )
+    quantity = fields.Float(
+        string="Quantity"
+    )
     price_content_pack = fields.Selection(
         selection=[
             ('show_price', 'Show price'),
@@ -44,14 +32,16 @@ class PackAdd(models.TransientModel):
         ],
         string='Price content pack',
         default='show_price',
-        help="Show or hide product prices that make the content of the pack.")
+        help="Show or hide product prices that make the content of the pack."
+    )
 
     @api.one
     def button_add(self):
         # Comprobar que han elegido un producto
         if not self.product_tmpl_id:
             raise exceptions.Warning(
-                _('You must introduce a pack.'))
+                _('You must introduce a pack.')
+            )
 
         # Crear una linea para el producto pack
         products = self.env['product.product'].search([

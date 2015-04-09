@@ -25,7 +25,7 @@
     'summary': '',
     'version': '0.1',
     'description': """
-Añade informacion de temporada a los productos, ademas de otra informacion
+    Añade informacion de temporada a los productos, ademas de otra informacion
     """,
     'author': 'Trey Kilobytes de Soluciones (www.trey.es)',
     'depends': ['base', 'product', 'sale'],

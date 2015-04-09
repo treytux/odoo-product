@@ -1,23 +1,7 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#
-#    Trey, Kilobytes de Soluciones
-#    Copyright (C) 2014-Today Trey, Kilobytes de Soluciones <www.trey.es>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-###############################################################################
+# License, author and contributors information in:
+# __openerp__.py file at the root folder of this module.
+
 from openerp import api, models, fields, exceptions, _
 
 
@@ -31,15 +15,17 @@ class WizProductLabelFromSale(models.TransientModel):
         ],
         string='Quantity',
         default='total',
-        translate=True)
+        translate=True
+    )
     include_service_product = fields.Boolean(
         string='Include service products',
-        default=False)
-
+        default=False
+    )
     show_origin = fields.Boolean(
         default=False,
         string='Show origin',
-        help="Show name sale order in label.")
+        help="Show name sale order in label."
+    )
 
     @api.multi
     def button_print_from_sale(self):
@@ -50,15 +36,15 @@ class WizProductLabelFromSale(models.TransientModel):
             move_ids = [
                 m.id for m in moves
                 if self.include_service_product
-                or (not self.include_service_product
-                    and m.product_id.type not in ('service'))
+                or not self.include_service_product and m.product_id.type
+                not in 'service'
             ]
         elif self.quantity == 'total':
             move_ids = []
             for m in moves:
                 if self.include_service_product or (not
                    self.include_service_product and
-                   m.product_id.type not in ('service')):
+                   m.product_id.type not in 'service'):
                     move_ids = move_ids + (
                         [m.id] * int(m.product_uom_qty))
 
