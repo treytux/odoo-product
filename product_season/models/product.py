@@ -2,36 +2,57 @@
 # License, author and contributors information in:
 # __openerp__.py file at the root folder of this module.
 
-from openerp.osv import fields, orm
+
+from openerp import models, fields
 
 
-class product_template(orm.Model):
+class ProductTemplate(models.Model):
     _inherit = "product.template"
-    _columns = {
-        'season_id': fields.many2one(
-            'product.season', 'Season', required=False),
-        'brand_id': fields.many2one('product.brand', 'Brand'),
-        # @todo Añadir dominio para que solo sean accesibles los partners
-        # proveedores y fabricante
-        'manufacturer_id': fields.many2one('res.partner', 'Manufacturer')
-    }
+
+    season_id = fields.Many2one(
+        comodel_name='product.season',
+        string='Season',
+        required=False
+    )
+    brand_id = fields.Many2one(
+        comodel_name='product.brand',
+        string='Brand'
+    )
+    # TODO: Añadir dominio para que solo sean accesibles los partners
+    manufacturer_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Manufacturer'
+    )
 
 
-class product_season(orm.Model):
+class ProductSeason(models.Model):
     _name = 'product.season'
     _description = 'Product season'
-    _columns = {
-        'name': fields.char('Name', size=255, translate=True, required=True),
-        'year': fields.char('Year', size=4),
-    }
+
+    name = fields.Char(
+        string='Name',
+        size=255,
+        translate=True,
+        required=True
+    )
+    year = fields.Char(
+        string='Year',
+        size=4
+    )
 
 
-class product_brand(orm.Model):
+class ProductBrand(models.Model):
     _name = 'product.brand'
     _description = 'Product brand'
-    _columns = {
-        'name': fields.char('Name', size=255, translate=True, required=True),
-        # @todo Añadir dominio para que solo sean accesibles los partners
-        # proveedores y fabricante
-        'manufacturer_id': fields.many2one('res.partner', 'Manufacturer')
-    }
+
+    name = fields.Char(
+        string='Name',
+        size=255,
+        translate=True,
+        required=True
+    )
+    # TODO: Añadir dominio para que solo sean accesibles los partners
+    manufacturer_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Manufacturer'
+    )
