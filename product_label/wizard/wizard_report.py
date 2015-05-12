@@ -23,18 +23,17 @@ class WizProductLabel(models.TransientModel):
     )
 
     def getPrice(self, product):
-        cr, uid, context = self.env.args
         pricelists = self.env['product.pricelist'].search([
-            ('type', '=', 'sale')])
+            ('name', 'ilike', 'Public Pricelist'), ('type', '=', 'sale')])
 
-        if len(pricelists) > 1:
+        if not pricelists.exists():
             pricelists = self.env['product.pricelist'].search([
-                ('name', 'ilike', 'Public Pricelist'), ('type', '=', 'sale')])
+                ('type', '=', 'sale')])
+
         if pricelists:
             prices = pricelists[0].price_get(product.id, 1)
             price_unit = prices[pricelists[0].id]
             price = product.taxes_id.compute_all(price_unit, 1)
-
             return price['total_included']
         else:
             return 0.00

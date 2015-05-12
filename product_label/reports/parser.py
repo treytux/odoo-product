@@ -2,7 +2,7 @@
 # License, author and contributors information in:
 # __openerp__.py file at the root folder of this module.
 
-from openerp import models, exceptions, _
+from openerp import models, exceptions, _, api
 from functools import partial
 from reportlab.graphics.barcode import createBarcodeDrawing
 
@@ -10,42 +10,62 @@ from reportlab.graphics.barcode import createBarcodeDrawing
 class ProductLabelReport(models.AbstractModel):
     _name = 'report.product_label.label'
 
-    def render_product_label(self, cr, uid, ids, docargs, context=None):
-        docs = self.pool['product.product'].browse(
-            cr, uid, ids, context=context)
+    @api.multi
+    def render_product_label(self, docargs):
         docargs.update({
-            'docs': docs,
+            'docs': self,
             'tmpl_name': 'product_label.label_document',
         })
         return docargs
 
-    def render_html(self, cr, uid, ids, data=None, context=None):
+    @api.multi
+    def render_html(self, data=None):
         docargs = {
-            'doc_ids': ids,
+            'doc_ids': self.ids,
             'doc_model': 'product.product',
             'formatCurrency': self.formatCurrency,
-            'printBarcode': partial(self.printBarcode, cr,
-                                    uid, context=context),
-            'formatSize': partial(self.formatSize, cr,
-                                  uid, context=context),
+            'getPrice': partial(self.getPrice),
+            'printBarcode': partial(self.printBarcode),
+            'formatSize': partial(self.formatSize),
         }
 
-        if 'render_func' in context and hasattr(self, context['render_func']):
-            fnc = getattr(self, context['render_func'])
-            fnc(cr, uid, ids, docargs, context=context)
+        render_func = self.env.context.get(
+            'render_func',
+            'render_product_label')
+        if hasattr(self, render_func):
+            fnc = getattr(self, render_func)
+            fnc(docargs)
         else:
-            raise exceptions.Warning(_('Don\'t have render func'))
+            raise exceptions.Warning(
+                _('Don\'t have render func %s in object' % render_func))
 
-        return self.pool['report'].render(
-            cr, uid, ids,
-            context.get('report_name', 'product_label.label'),
-            docargs,
-            context=context)
+        report = self.env['report'].browse(self.ids[0])
+        return report.with_context(
+            self.env.context).render('product_label.label', docargs)
 
+    @api.model
     def formatCurrency(self, value):
         return str('%.2f' % value).replace('.', ',')
 
-    def printBarcode(self, cr, uid, value, width, height, context=None):
+    @api.model
+    def getPrice(self, product):
+        pricelists = self.env['product.pricelist'].search([
+            ('name', 'ilike', 'Public Pricelist'), ('type', '=', 'sale')])
+
+        if not pricelists.exists():
+            pricelists = self.env['product.pricelist'].search([
+                ('type', '=', 'sale')])
+
+        if pricelists:
+            prices = pricelists[0].price_get(product.id, 1)
+            price_unit = prices[pricelists[0].id]
+            price = product.taxes_id.compute_all(price_unit, 1)
+            return price['total_included']
+        else:
+            return 0.00
+
+    @api.model
+    def printBarcode(self, value, width, height):
         try:
             width, height = int(width), int(height)
             barcode = createBarcodeDrawing(
@@ -53,12 +73,11 @@ class ProductLabelReport(models.AbstractModel):
             barcode = barcode.asString('png')
             barcode = barcode.encode('base64', 'strict')
         except (ValueError, AttributeError):
-            # raise exceptions.HTTPException(
-            #     description='Cannot convert into barcode.')
             raise exceptions.Warning(_('Cannot convert into barcode.'))
         return barcode
 
-    def formatSize(self, cr, uid, value, size, context=None):
+    @api.model
+    def formatSize(self, value, size):
         try:
             return value[:size]
         except:
